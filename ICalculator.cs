@@ -36,9 +36,9 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
         }
         public static double Calculate(StringBuilder s)
         {
-            int i = 1;
-            if (i == 1)
-                throw new ArgumentException("well darn that didn't work");
+
+            //throw new ArgumentException("well darn that didn't work");
+            Nullable<double>[] values = new Nullable<double>[20];
             return 0;
         }
     }

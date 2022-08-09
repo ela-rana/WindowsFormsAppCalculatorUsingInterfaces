@@ -192,7 +192,7 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
             history.Append(calcString.ToString());
             history.Append("=");
             //history.Append(result);
-            history.Append("\n");
+            history.AppendLine();
             textBoxHistory.Text = history.ToString();
             calcString.Clear();
         }
