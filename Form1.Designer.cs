@@ -56,6 +56,7 @@
             this.buttonClearCalculation = new System.Windows.Forms.Button();
             this.buttonClearHistory = new System.Windows.Forms.Button();
             this.textBoxHistory = new System.Windows.Forms.TextBox();
+            this.labelErrorMessage = new System.Windows.Forms.Label();
             this.groupBoxCalculator.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBoxHistory.SuspendLayout();
@@ -82,7 +83,7 @@
             this.groupBoxCalculator.Controls.Add(this.button2);
             this.groupBoxCalculator.Controls.Add(this.button1);
             this.groupBoxCalculator.Controls.Add(this.button0);
-            this.groupBoxCalculator.Location = new System.Drawing.Point(57, 50);
+            this.groupBoxCalculator.Location = new System.Drawing.Point(57, 102);
             this.groupBoxCalculator.Name = "groupBoxCalculator";
             this.groupBoxCalculator.Size = new System.Drawing.Size(271, 470);
             this.groupBoxCalculator.TabIndex = 0;
@@ -351,7 +352,7 @@
             this.groupBoxHistory.Controls.Add(this.buttonClearCalculation);
             this.groupBoxHistory.Controls.Add(this.buttonClearHistory);
             this.groupBoxHistory.Controls.Add(this.textBoxHistory);
-            this.groupBoxHistory.Location = new System.Drawing.Point(377, 50);
+            this.groupBoxHistory.Location = new System.Drawing.Point(377, 102);
             this.groupBoxHistory.Name = "groupBoxHistory";
             this.groupBoxHistory.Size = new System.Drawing.Size(271, 470);
             this.groupBoxHistory.TabIndex = 19;
@@ -395,12 +396,25 @@
             this.textBoxHistory.Text = "History";
             this.textBoxHistory.TextChanged += new System.EventHandler(this.textBoxHistory_TextChanged);
             // 
+            // labelErrorMessage
+            // 
+            this.labelErrorMessage.AutoSize = true;
+            this.labelErrorMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelErrorMessage.ForeColor = System.Drawing.Color.Red;
+            this.labelErrorMessage.Location = new System.Drawing.Point(25, 62);
+            this.labelErrorMessage.Name = "labelErrorMessage";
+            this.labelErrorMessage.Size = new System.Drawing.Size(88, 15);
+            this.labelErrorMessage.TabIndex = 20;
+            this.labelErrorMessage.Text = "Errors: None\r\n";
+            this.labelErrorMessage.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightGoldenrodYellow;
             this.ClientSize = new System.Drawing.Size(678, 584);
+            this.Controls.Add(this.labelErrorMessage);
             this.Controls.Add(this.groupBoxHistory);
             this.Controls.Add(this.groupBoxCalculator);
             this.Controls.Add(this.menuStrip1);
@@ -448,6 +462,7 @@
         private System.Windows.Forms.Button buttonClearCalculation;
         private System.Windows.Forms.Button buttonClearHistory;
         private System.Windows.Forms.TextBox textBoxHistory;
+        private System.Windows.Forms.Label labelErrorMessage;
     }
 }
 

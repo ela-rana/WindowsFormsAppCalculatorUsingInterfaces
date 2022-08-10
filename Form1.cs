@@ -18,6 +18,10 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
 
         //stringbuilder to hold calculation history
         StringBuilder history = new StringBuilder();
+
+        //A variable to hold the most recent calculation result
+        Nullable<double> result;
+
         public Form1()
         {
             InitializeComponent();
@@ -64,104 +68,249 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
             }
         }
 
+        /// <summary>
+        /// Reenables disabled buttons, clears error messages, and updates the Calculation textbox
+        /// </summary>
+        void RefreshOnNumClick()
+        {
+            buttonPlus.Enabled = true;
+            buttonMinus.Enabled = true;
+            buttonDivide.Enabled = true;
+            buttonMultiply.Enabled = true;
+            buttonEquals.Enabled = true;
+            labelErrorMessage.Visible = false;
+            textBoxCalculation.Text = calcString.ToString(); //updated calculation stored in calcString is displayed
+                                                             //on the Calculation textbox 
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             calcString.Append("1"); //every button click is converted to a string and added to calcString
-            textBoxCalculation.Text = calcString.ToString(); //updated calculation stored in calcString is displayed
-                                                             //on the Calculation textbox 
+            RefreshOnNumClick();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            calcString.Append("2");
-            textBoxCalculation.Text = calcString.ToString();
+            calcString.Append("2"); //every button click is converted to a string and added to calcString
+            RefreshOnNumClick();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            calcString.Append("3");
-            textBoxCalculation.Text = calcString.ToString();
+            calcString.Append("3"); //every button click is converted to a string and added to calcString
+            RefreshOnNumClick();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            calcString.Append("4");
-            textBoxCalculation.Text = calcString.ToString();
+            calcString.Append("4"); //every button click is converted to a string and added to calcString
+            RefreshOnNumClick();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            calcString.Append("5");
-            textBoxCalculation.Text = calcString.ToString();
+            calcString.Append("1"); //every button click is converted to a string and added to calcString
+            RefreshOnNumClick();
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            calcString.Append("6");
-            textBoxCalculation.Text = calcString.ToString();
+            calcString.Append("1"); //every button click is converted to a string and added to calcString
+            RefreshOnNumClick();
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            calcString.Append("7");
-            textBoxCalculation.Text = calcString.ToString();
+            calcString.Append("1"); //every button click is converted to a string and added to calcString
+            RefreshOnNumClick();
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            calcString.Append("8");
-            textBoxCalculation.Text = calcString.ToString();
+            calcString.Append("1"); //every button click is converted to a string and added to calcString
+            RefreshOnNumClick();
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
-            calcString.Append("9");
-            textBoxCalculation.Text = calcString.ToString();
+            calcString.Append("1"); //every button click is converted to a string and added to calcString
+            RefreshOnNumClick();
         }
 
         private void button0_Click(object sender, EventArgs e)
         {
-            calcString.Append("0");
-            textBoxCalculation.Text = calcString.ToString();
+            calcString.Append("1"); //every button click is converted to a string and added to calcString
+            RefreshOnNumClick();
         }
 
         private void buttonPoint_Click(object sender, EventArgs e)
         {
+            labelErrorMessage.Visible = false;
             calcString.Append(".");
             textBoxCalculation.Text = calcString.ToString();
+            buttonPoint.Enabled = false;
+            buttonPlus.Enabled = false;
+            buttonMinus.Enabled = false;
+            buttonDivide.Enabled = false;
+            buttonMultiply.Enabled = false;
+            buttonEquals.Enabled = false;
         }
 
         private void buttonPlus_Click(object sender, EventArgs e)
         {
-            calcString.Append("+");
+            buttonPoint.Enabled = true;
+            labelErrorMessage.Visible = false;
+            if (calcString.Length <= 0)
+            {
+                labelErrorMessage.Visible = true;
+                if (result != null)
+                {
+                    labelErrorMessage.Text =
+                    "You added your operator before any value.\nThe previous calculation's result will be used as the first operator";
+                    calcString.Append(result);
+                    calcString.Append("+");
+                }
+                else
+                {
+                    labelErrorMessage.Text =
+                    "You cannot start your expression with a string.\nPlease add a value before your arithmetic operator";
+                }
+            }
+            else
+            {
+                calcString.Append("+");
+            }
             textBoxCalculation.Text = calcString.ToString();
+            buttonPlus.Enabled = false;
+            buttonMinus.Enabled = false;
+            buttonDivide.Enabled = false;
+            buttonMultiply.Enabled = false;
+            buttonEquals.Enabled = false;
         }
 
         private void buttonMinus_Click(object sender, EventArgs e)
         {
-            calcString.Append("-");
+            buttonPoint.Enabled = true;
+            labelErrorMessage.Visible = false;
+            if (calcString.Length <= 0)
+            {
+                labelErrorMessage.Visible = true;
+                if (result != null) 
+                {
+                    labelErrorMessage.Text =
+                    "You added your operator before any value.\nThe previous calculation's result will be used as the first operator";
+                    calcString.Append(result);
+                    calcString.Append("-");
+                }
+                else
+                {
+                    labelErrorMessage.Text =
+                    "You cannot start your expression with a string.\nPlease add a value before your arithmetic operator";
+                }
+            }
+            else
+            {
+                calcString.Append("-");
+            }
             textBoxCalculation.Text = calcString.ToString();
+            buttonPlus.Enabled = false;
+            buttonMinus.Enabled = false;
+            buttonDivide.Enabled = false;
+            buttonMultiply.Enabled = false;
+            buttonEquals.Enabled = false;
+
         }
 
         private void buttonMultiply_Click(object sender, EventArgs e)
         {
-            calcString.Append("*");
+            buttonPoint.Enabled = true;
+            labelErrorMessage.Visible = false;
+            if (calcString.Length <= 0)
+            {
+                labelErrorMessage.Visible = true;
+                if (result != null)
+                {
+                    labelErrorMessage.Text =
+                    "You added your operator before any value.\nThe previous calculation's result will be used as the first operator";
+                    calcString.Append(result);
+                    calcString.Append("*");
+                }
+                else
+                {
+                    labelErrorMessage.Text =
+                    "You cannot start your expression with a string.\nPlease add a value before your arithmetic operator";
+                }
+            }
+            else
+            {
+                calcString.Append("*");
+            }
             textBoxCalculation.Text = calcString.ToString();
+            buttonPlus.Enabled = false;
+            buttonMinus.Enabled = false;
+            buttonDivide.Enabled = false;
+            buttonMultiply.Enabled = false;
+            buttonEquals.Enabled = false;
+
         }
 
         private void buttonDivide_Click(object sender, EventArgs e)
         {
-            calcString.Append("/");
+            buttonPoint.Enabled = true;
+            labelErrorMessage.Visible = false;
+            if (calcString.Length <= 0)
+            {
+                labelErrorMessage.Visible = true;
+                if (result != null)
+                {
+                    labelErrorMessage.Text =
+                    "You added your operator before any value.\nThe previous calculation's result will be used as the first operator";
+                    calcString.Append(result);
+                    calcString.Append("/");
+                }
+                else
+                {
+                    labelErrorMessage.Text =
+                    "You cannot start your expression with a string.\nPlease add a value before your arithmetic operator";
+                }
+            }
+            else
+            {
+                calcString.Append("/");
+            }
             textBoxCalculation.Text = calcString.ToString();
+            buttonPlus.Enabled = false;
+            buttonMinus.Enabled = false;
+            buttonDivide.Enabled = false;
+            buttonMultiply.Enabled = false;
+            buttonEquals.Enabled = false;
+
         }
 
         private void buttonBack_Click(object sender, EventArgs e)
         {
+            labelErrorMessage.Visible = false;
             //the back button is treated like a backspace button. So if it is clicked, the most recent entered
             //button click stored in calcString is deleted by reducing the stringbuilder length by 1 
             //which wipes out the last character
-            calcString.Length--;    //decrement stringbuilder size by 1
-            textBoxCalculation.Text = calcString.ToString(); //display updated calcString in Calculation textbox
+            if (calcString.Length > 0)
+            {
+                calcString.Length--;    //decrement stringbuilder size by 1
+                textBoxCalculation.Text = calcString.ToString(); //display updated calcString in Calculation textbox
+                if(calcString.ToString().EndsWith("."))
+                {
+                    buttonPoint.Enabled = false;
+                    buttonPlus.Enabled = false;
+                    buttonMinus.Enabled = false;
+                    buttonDivide.Enabled = false;
+                    buttonMultiply.Enabled = false;
+                    buttonEquals.Enabled = false;
+                }
+            }
+            else
+            {
+                labelErrorMessage.Visible = true;
+                labelErrorMessage.Text = "Nothing present to backspace";
+            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -178,20 +327,20 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
         /// <param name="e"></param>
         private void buttonEquals_Click(object sender, EventArgs e)
         {
-            double result;
             try
             {
                 result = Calculator.Calculate(calcString);
                 textBoxResultsScreen.Text = result.ToString();
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                textBoxResultsScreen.Text = ex.Message;
+                textBoxResultsScreen.Text = "Error: Division by zero.Start over";
+                result = null;
             }
             history.Append(calcString.ToString());
             history.Append("=");
-            //history.Append(result);
+            history.Append(result);
             history.AppendLine();
             textBoxHistory.Text = history.ToString();
             calcString.Clear();
