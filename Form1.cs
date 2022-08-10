@@ -190,7 +190,7 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
                 else
                 {
                     labelErrorMessage.Text =
-                    "You cannot start your expression with a string.\nPlease add a value before your arithmetic operator";
+                    "You cannot start your expression with an operator.\nPlease add a value before your arithmetic operator";
                 }
             }
             else
@@ -222,7 +222,7 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
                 else
                 {
                     labelErrorMessage.Text =
-                    "You cannot start your expression with a string.\nPlease add a value before your arithmetic operator";
+                    "You cannot start your expression with an operator.\nPlease add a value before your arithmetic operator";
                 }
             }
             else
@@ -255,7 +255,7 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
                 else
                 {
                     labelErrorMessage.Text =
-                    "You cannot start your expression with a string.\nPlease add a value before your arithmetic operator";
+                    "You cannot start your expression with an operator.\nPlease add a value before your arithmetic operator";
                 }
             }
             else
@@ -288,7 +288,7 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
                 else
                 {
                     labelErrorMessage.Text =
-                    "You cannot start your expression with a string.\nPlease add a value before your arithmetic operator";
+                    "You cannot start your expression with an operator.\nPlease add a value before your arithmetic operator";
                 }
             }
             else
@@ -326,6 +326,17 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
                     buttonMultiply.Enabled = true;
                     buttonEquals.Enabled = true;
                 }
+                else if (calcString.ToString().EndsWith("+") || calcString.ToString().EndsWith("-") ||
+                          calcString.ToString().EndsWith("*") || calcString.ToString().EndsWith("/"))
+                //if before backspacing the last entered value is an operator, then we need to re-enable
+                //all the buttons that that operator would have disabled
+                {
+                    buttonPlus.Enabled = true;
+                    buttonMinus.Enabled = true;
+                    buttonDivide.Enabled = true;
+                    buttonMultiply.Enabled = true;
+                    buttonEquals.Enabled = true;
+                }
                 calcString.Length--;    //decrement stringbuilder size by 1
                 textBoxCalculation.Text = calcString.ToString(); //display updated calcString in Calculation textbox
                 if (calcString.ToString().EndsWith(".")) //if after backspacing the last entered value is a decimal point
@@ -340,7 +351,7 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
                 }
                 else if ( calcString.ToString().EndsWith("+") || calcString.ToString().EndsWith("-") ||
                           calcString.ToString().EndsWith("*") || calcString.ToString().EndsWith("/") )
-                //if after backspacing the last entered value is a an operator, then we need to re-disable
+                //if after backspacing the last entered value is an operator, then we need to re-disable
                 //all the buttons that should not be pressed after an operator, such as another operator or the equals button
                 {
                     buttonPlus.Enabled = false;
@@ -389,6 +400,7 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
             history.AppendLine();
             textBoxHistory.Text = history.ToString();
             calcString.Clear();
+            buttonPoint.Enabled = true;
         }
 
         private void buttonClearCalculation_Click(object sender, EventArgs e)
@@ -401,6 +413,8 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
         {
             history.Clear();
             textBoxHistory.Clear();
+            result = null;
+            textBoxResultsScreen.Text = null;     
         }
     }
 }
