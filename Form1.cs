@@ -108,51 +108,69 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
 
         private void button5_Click(object sender, EventArgs e)
         {
-            calcString.Append("1"); //every button click is converted to a string and added to calcString
+            calcString.Append("5"); //every button click is converted to a string and added to calcString
             RefreshOnNumClick();
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            calcString.Append("1"); //every button click is converted to a string and added to calcString
+            calcString.Append("6"); //every button click is converted to a string and added to calcString
             RefreshOnNumClick();
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            calcString.Append("1"); //every button click is converted to a string and added to calcString
+            calcString.Append("7"); //every button click is converted to a string and added to calcString
             RefreshOnNumClick();
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            calcString.Append("1"); //every button click is converted to a string and added to calcString
+            calcString.Append("8"); //every button click is converted to a string and added to calcString
             RefreshOnNumClick();
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
-            calcString.Append("1"); //every button click is converted to a string and added to calcString
+            calcString.Append("9"); //every button click is converted to a string and added to calcString
             RefreshOnNumClick();
         }
 
         private void button0_Click(object sender, EventArgs e)
         {
-            calcString.Append("1"); //every button click is converted to a string and added to calcString
+            calcString.Append("0"); //every button click is converted to a string and added to calcString
             RefreshOnNumClick();
         }
 
         private void buttonPoint_Click(object sender, EventArgs e)
         {
             labelErrorMessage.Visible = false;
-            calcString.Append(".");
-            textBoxCalculation.Text = calcString.ToString();
             buttonPoint.Enabled = false;
-            buttonPlus.Enabled = false;
-            buttonMinus.Enabled = false;
-            buttonDivide.Enabled = false;
-            buttonMultiply.Enabled = false;
-            buttonEquals.Enabled = false;
+
+            int lastOperatorPosition = 0;
+            //error handling to prevent multiple points in same number: For example, 3+2.5.9
+            for (int i = calcString.Length - 1; i >= 0; i--)
+            {
+                if (calcString[i] == '+' || calcString[i] == '-' || calcString[i] == '*' || calcString[i] == '/')
+                {
+                    lastOperatorPosition = i;
+                    break;
+                }
+            }
+            if (calcString.ToString().Substring(lastOperatorPosition).Contains("."))
+            {
+                labelErrorMessage.Text = "Cannot have more than one point in a number";
+            }
+            else 
+            {
+                calcString.Append(".");
+                textBoxCalculation.Text = calcString.ToString();
+                buttonPlus.Enabled = false;
+                buttonMinus.Enabled = false;
+                buttonDivide.Enabled = false;
+                buttonMultiply.Enabled = false;
+                buttonEquals.Enabled = false;
+            }
         }
 
         private void buttonPlus_Click(object sender, EventArgs e)
@@ -289,14 +307,29 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
         private void buttonBack_Click(object sender, EventArgs e)
         {
             labelErrorMessage.Visible = false;
+
             //the back button is treated like a backspace button. So if it is clicked, the most recent entered
             //button click stored in calcString is deleted by reducing the stringbuilder length by 1 
             //which wipes out the last character
-            if (calcString.Length > 0)
+
+            if (calcString.Length > 0)  //as long as there is something to backspace
             {
+                if (calcString.ToString().EndsWith("."))    //before pressing back if the last digit was a decimal
+                                                            //then after backspacing and clearing out that decimal,
+                                                            //the decimal, equals and operator button which would
+                                                            //have been disabled by point button click should be reenabled
+                {
+                    buttonPoint.Enabled = true;
+                    buttonPlus.Enabled = true;
+                    buttonMinus.Enabled = true;
+                    buttonDivide.Enabled = true;
+                    buttonMultiply.Enabled = true;
+                    buttonEquals.Enabled = true;
+                }
                 calcString.Length--;    //decrement stringbuilder size by 1
                 textBoxCalculation.Text = calcString.ToString(); //display updated calcString in Calculation textbox
-                if(calcString.ToString().EndsWith("."))
+                if (calcString.ToString().EndsWith(".")) //if after backspacing the last entered value is a decimal point
+                            //then we need to re-disable all the buttons that should not be pressed after a decimal point
                 {
                     buttonPoint.Enabled = false;
                     buttonPlus.Enabled = false;
@@ -305,8 +338,20 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
                     buttonMultiply.Enabled = false;
                     buttonEquals.Enabled = false;
                 }
+                else if ( calcString.ToString().EndsWith("+") || calcString.ToString().EndsWith("-") ||
+                          calcString.ToString().EndsWith("*") || calcString.ToString().EndsWith("/") )
+                //if after backspacing the last entered value is a an operator, then we need to re-disable
+                //all the buttons that should not be pressed after an operator, such as another operator or the equals button
+                {
+                    buttonPlus.Enabled = false;
+                    buttonMinus.Enabled = false;
+                    buttonDivide.Enabled = false;
+                    buttonMultiply.Enabled = false;
+                    buttonEquals.Enabled = false;
+                }
+
             }
-            else
+            else //if the string was already empty (nothing to backspace), then an error is displayed in the label
             {
                 labelErrorMessage.Visible = true;
                 labelErrorMessage.Text = "Nothing present to backspace";
