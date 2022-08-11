@@ -35,7 +35,6 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
                     {
                         //Ex: of this if block: 
                         //5+2/0-1 -> 2/0 is a division by zero
-                        //5/0
                         //5/0.4+3-6/0-1  Here the first /0 in "5/0.4" is not a divide by zero but the "6/0" is
                         throw new ArgumentException("Error: Division by zero. Start over");
                     }
@@ -43,13 +42,8 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
                     {
                         //5/0.4+3-6/0-1
                         //Here the first /0 in "5/0.4" is not a divide by zero but the "6/0" is
-                        //thus after finding the first /0 if the exception is not thrown, we will delete everything 
-                        //in the temporary StringBuilder upto that /0 so that we can go through the while loop to search 
-                        //again for any more /0 instances in the string
+                        //thus we can go through the while loop to search again for any more /0 instances in the string
                         temp.Remove(0, temp.ToString().IndexOf("/0") + 2);
-                        //so after this statement our above example string: 5/0.4+3-6/0-1 becomes
-                        //4+3-6/0-1 so then when the loop runs again it will find the next /0 which is an actual divide by
-                        //zero and it will throw error
                     }
                 }
                 else //if /0 wasn't found on this iteration then there are no more possible divide by zeros so we can stop checking

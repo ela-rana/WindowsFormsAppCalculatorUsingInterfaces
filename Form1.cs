@@ -390,9 +390,10 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
                 textBoxResultsScreen.Text = result.ToString();
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                textBoxResultsScreen.Text = "Error: Division by zero.Start over";
+                textBoxResultsScreen.Text = "Error";
+                MessageBox.Show(ex.Message);
                 result = null;
             }
             history.Append(calcString.ToString());
@@ -423,38 +424,74 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
             Calculator.DivideByZeroHandler(s);
 
             double result = 0;  //to hold the result of the calculation
-            double num1, num2;   //the two values to use for calculation
             StringBuilder[] mathItem = new StringBuilder[5];
             //holds [num1],[operator1],[num2],[operator2],[num3]
+            for (int i = 0; i < mathItem.Length; i++)
+                mathItem[i] = new StringBuilder();  //initialize each StringBuilder within the StringBuilder array
 
+            Calculator calc = new Calculator();
             int j = 0;    //to hold the index location of mathItem
             while (s.Length > 0)
             {
                 if (!Regex.IsMatch(s[0].ToString(), @"[\+\-\/\*]"))   //if its part of the numerical value
                 {
-                    mathItem[j].Append(s[0]);
+                    mathItem[j].Append(s[0].ToString());
                     s.Remove(0, 1);
                     if (Regex.IsMatch(s[1].ToString(), @"[\+\-\/\*]"))    //if the next char is an operator,
                                                                           //meaning end of the num
                     {
                         if (j == 2 && Regex.IsMatch(mathItem[1].ToString(), @"[\/\*]"))    //j==2 means we got our second number
+                        //and the match makes sure its a divide or multiply since those would mean the calculation can be done
                         {
-                            if (mathItem[1].ToString() == "*")
-                                result = Calculator.Multiply(Double.Parse(mathItem[0].ToString()), Double.Parse(mathItem[2].ToString()));
+                            if (mathItem[1].ToString() == "*")  //if multiply
+                                result = calc.Multiply(Double.Parse(mathItem[0].ToString()), Double.Parse(mathItem[2].ToString()));
+                            else    //if divide
+                                result = calc.Divide(Double.Parse(mathItem[0].ToString()), Double.Parse(mathItem[2].ToString()));
+                            mathItem[0].Clear();
+                            mathItem[1].Clear();
+                            mathItem[2].Clear();
+                            mathItem[0].Append(result.ToString());
+                            j = 0;
                         }
+                        if (j == 4 && Regex.IsMatch(mathItem[3].ToString(), @"[\/\*]"))    //j==4 means we got 3 numbers and 2 oprators
+                        //and the match makes sure its a divide or multiply since those have priority
+                        {
+                            if (mathItem[3].ToString() == "*")  //if multiply
+                                result = calc.Multiply(Double.Parse(mathItem[2].ToString()), Double.Parse(mathItem[4].ToString()));
+                            else    //if divide
+                                result = calc.Divide(Double.Parse(mathItem[2].ToString()), Double.Parse(mathItem[4].ToString()));
+                            mathItem[2].Clear();
+                            mathItem[3].Clear();
+                            mathItem[4].Clear();
+                            mathItem[2].Append(result.ToString());
+                            j = 2;
+                        }
+                        if (j == 4 && Regex.IsMatch(mathItem[3].ToString(), @"[\+\-]"))
+                        {
+                            if (mathItem[1].ToString() == "+")  //if add is the first operator
+                                result = calc.Add(Double.Parse(mathItem[0].ToString()), Double.Parse(mathItem[2].ToString()));
+                            else    //if subtract
+                                result = calc.Subtract(Double.Parse(mathItem[0].ToString()), Double.Parse(mathItem[2].ToString()));
+                            mathItem[0].Clear();
+                            mathItem[1].Clear();
+                            mathItem[2].Clear();
+                            mathItem[0].Append(result.ToString());
+                            mathItem[1].Append(mathItem[3].ToString());
+                            mathItem[2].Append(mathItem[4].ToString());
+                            mathItem[3].Clear();
+                            mathItem[4].Clear();
+                            j = 2;
+                        }
+                        j++;
                     }
                 }
-                //else    //if it is a math operator
-                //{
-                //    j++;
-                //    mathItem[j].Append(s[0]);
-                //    s.Remove(0,1);
-                //    j++;
-                //    if(j==)
-                // }
-
+                else    //if it is a math operator
+                {
+                    mathItem[j].Append(s[0].ToString());
+                    s.Remove(0, 1);
+                    j++;
+                }
             }
-
             return result;  //to return the result of the calculation
         }
     }
