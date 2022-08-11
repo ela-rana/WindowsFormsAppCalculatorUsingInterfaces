@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
 namespace WindowsFormsAppCalculatorUsingInterfaces
 {
@@ -385,7 +386,7 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
         {
             try
             {
-                result = Calculator.Calculate(calcString);
+                result = Calculate(calcString);
                 textBoxResultsScreen.Text = result.ToString();
 
             }
@@ -415,6 +416,46 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
             textBoxHistory.Clear();
             result = null;
             textBoxResultsScreen.Text = null;     
+        }
+        public static double Calculate(StringBuilder s)
+        {
+            //custom error handler for divide by zero
+            Calculator.DivideByZeroHandler(s);
+
+            double result = 0;  //to hold the result of the calculation
+            double num1, num2;   //the two values to use for calculation
+            StringBuilder[] mathItem = new StringBuilder[5];
+            //holds [num1],[operator1],[num2],[operator2],[num3]
+
+            int j = 0;    //to hold the index location of mathItem
+            while (s.Length > 0)
+            {
+                if (!Regex.IsMatch(s[0].ToString(), @"[\+\-\/\*]"))   //if its part of the numerical value
+                {
+                    mathItem[j].Append(s[0]);
+                    s.Remove(0, 1);
+                    if (Regex.IsMatch(s[1].ToString(), @"[\+\-\/\*]"))    //if the next char is an operator,
+                                                                          //meaning end of the num
+                    {
+                        if (j == 2 && Regex.IsMatch(mathItem[1].ToString(), @"[\/\*]"))    //j==2 means we got our second number
+                        {
+                            if (mathItem[1].ToString() == "*")
+                                result = Calculator.Multiply(Double.Parse(mathItem[0].ToString()), Double.Parse(mathItem[2].ToString()));
+                        }
+                    }
+                }
+                //else    //if it is a math operator
+                //{
+                //    j++;
+                //    mathItem[j].Append(s[0]);
+                //    s.Remove(0,1);
+                //    j++;
+                //    if(j==)
+                // }
+
+            }
+
+            return result;  //to return the result of the calculation
         }
     }
 }

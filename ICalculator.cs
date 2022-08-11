@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions;
 
 namespace WindowsFormsAppCalculatorUsingInterfaces
 {
@@ -16,72 +15,13 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
     }
     class Calculator : ICalculator
     {
-        public double Add(double i, double j)
-        {
-            return i + j;
-        }
+        public double Add(double i, double j) { return i + j; }
 
-        public double Divide(double i, double j)
-        {
-            return i / j;
-        }
+        public double Divide(double i, double j) { return i / j; }
 
-        public double Multiply(double i, double j)
-        {
-            return i * j;
-        }
-
-        public double Subtract(double i, double j)
-        {
-            return i - j;
-        }
-        public static double Calculate(StringBuilder s)
-        {
-           //custom error handler for divide by zero
-            DivideByZeroHandler(s);
-
-            double result = 0;  //to hold the result of the calculation
-
-            StringBuilder[] mathItem = new StringBuilder[5];    
-            //holds [num1],[operator1],[num2],[operator2],[num3]
-
-            int j=0;    //to hold the index location of mathItem
-            while(s.Length>0)
-            {
-                
-                
-                if ( !Regex.IsMatch(s[0].ToString(), @"[\+\-\/\*]") )   //if its part of the 
-                { 
-                    mathItem[j].Append(s[0]);
-                    s.Remove(0,1);
-                    if ( Regex.IsMatch(s[1].ToString(), @"[\+\-\/\*]") )    //if the next char is an operator
-                    {
-                        if(j==3 && Regex.IsMatch(mathItem[2].ToString(), @"[\/\*]"))
-                    }
-                }
-                //else    //if it is a math operator
-                //{
-                //    j++;
-                //    mathItem[j].Append(s[0]);
-                //    s.Remove(0,1);
-                //    j++;
-                //    if(j==)
-               // }
-
-            }
-
-
-
-
-
-
-
-
-
-
-
-            return result;  //to return the result of the calculation
-        }
+        public double Multiply(double i, double j) { return i * j; }
+    
+        public double Subtract(double i, double j) { return i + j; }
         public static void DivideByZeroHandler(StringBuilder s)
         {
             StringBuilder temp = new StringBuilder(s.ToString());   //a temp variable to keep a copy of our string
@@ -117,36 +57,6 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
                     keepChecking = false;   //to stop while loop
                 }
             }
-
-            StringBuilder[] items = new StringBuilder[5];
-            int itemPosition = 0;
-            for(int i=0; i<s.Length; i++)
-            {
-                if (items[i]==)
-            }
         }
     }
 }
-
-        //Didn't need the following method
-        //public static int CountOperators(StringBuilder s)
-        //{
-        //    int count = 0;
-        //    foreach (char c in s.ToString())
-        //    {
-        //        if (c == '+' || c == '-' || c == '*' || c == '/')
-        //            count++;
-        //    }
-        //    return count;
-        //}
-        //int operatorCount = CountOperators(s);
-
-//NOTE: Other errors are prevented by the button click event handlers 
-//Here is a list of errors not allowed by the button click implementation by enabling/disabling certain button
-//clicks after certain other button clicks are made
-//1. two decimal points (like "3.2.2") for same number prevented by disabling '.'button after it is pressed until
-//next operator or equal to sign is clicked
-//2. two back to back operators (like "3/*") not allowed because operators are disabled after one operator is pressed
-//and only reenables after another number or decimal point value is entered
-//3. the calculation string cannot start or end with operator and cannot end with a decimal point
-//Ex: these are not allowed: "/2+1", "2/3+", "2+5."
