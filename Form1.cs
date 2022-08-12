@@ -10,8 +10,7 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 
 namespace WindowsFormsAppCalculatorUsingInterfaces
-{
-    
+{   
     public partial class Form1 : Form
     {
         //temporary stringbuilder to hold all user clicks for current calculation
@@ -413,86 +412,69 @@ namespace WindowsFormsAppCalculatorUsingInterfaces
 
         private void buttonClearHistory_Click(object sender, EventArgs e)
         {
-            history.Clear();
             textBoxHistory.Clear();
+            textBoxCalculation.Clear();
+            textBoxResultsScreen.Clear();     
+            history.Clear();
+            calcString.Clear();
             result = null;
-            textBoxResultsScreen.Text = null;     
         }
         public static double Calculate(StringBuilder s)
-        {
-            //custom error handler for divide by zero
+        {            
+            double calcResult = 0;  //to hold the result of the calculation at each step, in the end it will end up with the final calculation result 
+
+            //custom error handler for divide by zero first
             Calculator.DivideByZeroHandler(s);
 
-            double result = 0;  //to hold the result of the calculation
-            StringBuilder[] mathItem = new StringBuilder[5];
-            //holds [num1],[operator1],[num2],[operator2],[num3]
-            for (int i = 0; i < mathItem.Length; i++)
-                mathItem[i] = new StringBuilder();  //initialize each StringBuilder within the StringBuilder array
-
             Calculator calc = new Calculator();
-            int j = 0;    //to hold the index location of mathItem
-            while (s.Length > 0)
+            string pattern = @"[\+\-\/\*]|[\d\.]+"; //pattern string: finds each double number or operator 
+            MatchCollection matches = Regex.Matches(s.ToString(), pattern); //saves every number/operator item in our expression
+            List<StringBuilder> list = new List<StringBuilder>();   //a list to hold the values in the match collection
+            foreach (Match m in matches)
             {
-                if (!Regex.IsMatch(s[0].ToString(), @"[\+\-\/\*]"))   //if its part of the numerical value
-                {
-                    mathItem[j].Append(s[0].ToString());
-                    s.Remove(0, 1);
-                    if (Regex.IsMatch(s[1].ToString(), @"[\+\-\/\*]"))    //if the next char is an operator,
-                                                                          //meaning end of the num
-                    {
-                        if (j == 2 && Regex.IsMatch(mathItem[1].ToString(), @"[\/\*]"))    //j==2 means we got our second number
-                        //and the match makes sure its a divide or multiply since those would mean the calculation can be done
-                        {
-                            if (mathItem[1].ToString() == "*")  //if multiply
-                                result = calc.Multiply(Double.Parse(mathItem[0].ToString()), Double.Parse(mathItem[2].ToString()));
-                            else    //if divide
-                                result = calc.Divide(Double.Parse(mathItem[0].ToString()), Double.Parse(mathItem[2].ToString()));
-                            mathItem[0].Clear();
-                            mathItem[1].Clear();
-                            mathItem[2].Clear();
-                            mathItem[0].Append(result.ToString());
-                            j = 0;
-                        }
-                        if (j == 4 && Regex.IsMatch(mathItem[3].ToString(), @"[\/\*]"))    //j==4 means we got 3 numbers and 2 oprators
-                        //and the match makes sure its a divide or multiply since those have priority
-                        {
-                            if (mathItem[3].ToString() == "*")  //if multiply
-                                result = calc.Multiply(Double.Parse(mathItem[2].ToString()), Double.Parse(mathItem[4].ToString()));
-                            else    //if divide
-                                result = calc.Divide(Double.Parse(mathItem[2].ToString()), Double.Parse(mathItem[4].ToString()));
-                            mathItem[2].Clear();
-                            mathItem[3].Clear();
-                            mathItem[4].Clear();
-                            mathItem[2].Append(result.ToString());
-                            j = 2;
-                        }
-                        if (j == 4 && Regex.IsMatch(mathItem[3].ToString(), @"[\+\-]"))
-                        {
-                            if (mathItem[1].ToString() == "+")  //if add is the first operator
-                                result = calc.Add(Double.Parse(mathItem[0].ToString()), Double.Parse(mathItem[2].ToString()));
-                            else    //if subtract
-                                result = calc.Subtract(Double.Parse(mathItem[0].ToString()), Double.Parse(mathItem[2].ToString()));
-                            mathItem[0].Clear();
-                            mathItem[1].Clear();
-                            mathItem[2].Clear();
-                            mathItem[0].Append(result.ToString());
-                            mathItem[1].Append(mathItem[3].ToString());
-                            mathItem[2].Append(mathItem[4].ToString());
-                            mathItem[3].Clear();
-                            mathItem[4].Clear();
-                            j = 2;
-                        }
-                        j++;
-                    }
-                }
-                else    //if it is a math operator
-                {
-                    mathItem[j].Append(s[0].ToString());
-                    s.Remove(0, 1);
-                    j++;
-                }
+                list.Add(new StringBuilder(m.ToString()));  //to add each item in the math expression to list as a stringbuilder
             }
-            return result;  //to return the result of the calculation
+
+            //list.RemoveRange(6, 3);
+            //list.Insert(6, new StringBuilder("2345"));
+            //foreach (StringBuilder sb in list)
+            //    Console.WriteLine(sb.ToString());
+            int i = 1;  //index of list
+
+            //since multiply and divide takes priority over add and subtract, the first while loop goes through and performs * and / 
+            //operations only from left to right
+            while (i < list.Count())
+            {
+                if (list[i].ToString() == "*" || list[i].ToString() == "/")
+                {
+                    if (list[i].ToString() == "*")
+                        calcResult = calc.Multiply( Double.Parse(list[i - 1].ToString()) , Double.Parse(list[i + 1].ToString()) );
+                            // Double.Parse(list[i - 1].ToString()) * Double.Parse(list[i + 1].ToString());
+                    else
+                        calcResult = calc.Divide(Double.Parse(list[i - 1].ToString()), Double.Parse(list[i + 1].ToString()));
+                    list.RemoveRange(i - 1, 3);
+                    list.Insert(i - 1, new StringBuilder(calcResult.ToString()));
+                }
+                else
+                    i++;
+            }
+            i = 1;  //to go through an do the remaining operations (+ and -) starting back from 1 (the first possible location of an operator
+            while (i < list.Count())
+            {
+                if (list[i].ToString() == "+" || list[i].ToString() == "-")
+                {
+                    if (list[i].ToString() == "+")
+                        calcResult = calc.Add(Double.Parse(list[i - 1].ToString()), Double.Parse(list[i + 1].ToString()));
+                    else
+                        calcResult = calc.Subtract(Double.Parse(list[i - 1].ToString()), Double.Parse(list[i + 1].ToString()));
+                    list.RemoveRange(i - 1, 3);
+                    list.Insert(i - 1, new StringBuilder(calcResult.ToString()));
+                }
+                else
+                    i++;
+            }
+
+            return calcResult;  //to return the result of the calculation
         }
     }
 }
